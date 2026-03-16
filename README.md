@@ -6,8 +6,6 @@ English | [中文](README_ZH.md)
 
 An AI-powered tool to transcribe and summarize videos and podcasts — supports YouTube, TikTok, Bilibili, Apple Podcasts, SoundCloud, and 30+ platforms.
 
-![Interface](https://img.shields.io/badge/Interface-Streamlit-blue) ![CLI](https://img.shields.io/badge/CLI-Ready-green)
-
 </div>
 
 ## ✨ Features
@@ -17,10 +15,9 @@ An AI-powered tool to transcribe and summarize videos and podcasts — supports 
 - 🗣️ **Intelligent Transcription**: High-accuracy speech-to-text using Faster-Whisper when subtitles aren't available
 - 🤖 **AI Text Optimization**: Automatic typo correction, sentence completion, and intelligent paragraphing
 - 🌍 **Multi-Language Summaries**: Generate intelligent summaries in multiple languages
-- 🔧 **Bring Your Own Model**: Configure any OpenAI-compatible API endpoint (OpenAI, OpenRouter, local LLM, etc.) directly in the UI
+- 🔧 **Bring Your Own Model**: Compatible with Zhipu AI, Gemini, and other OpenAI-compatible API endpoints
 - ⚙️ **Conditional Translation**: Auto-translates the transcript when the summary language differs from the source language
-- 📱 **Mobile-Friendly**: Perfect support for mobile devices
-- 💻 **CLI Tool**: Support for local video file processing without internet connection
+- 🇨🇳 **Traditional to Simplified Chinese**: Automatic conversion of Traditional Chinese transcripts
 
 ## 🚀 Quick Start
 
@@ -28,126 +25,133 @@ An AI-powered tool to transcribe and summarize videos and podcasts — supports 
 
 - Python 3.8+
 - FFmpeg
-- An API key from any OpenAI-compatible provider (Zhipu AI, Gemini, OpenAI, etc.)
+- AI API Key (Zhipu AI or Gemini)
 
 ### Installation
 
-#### Method 1: Docker (Recommended)
-
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/ai-transcriber.git
+git clone https://github.com/20082123/ai-transcriber.git
 cd ai-transcriber
 
-# Using Docker Compose (easiest)
-cp .env.example .env
-# Edit .env file to set your API key
-docker-compose up -d
-
-# Visit http://localhost:8501
-```
-
-#### Method 2: Manual Installation
-
-1. **Install Python Dependencies**
-```bash
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-2. **Install FFmpeg**
-```bash
-# macOS
-brew install ffmpeg
+### Configuration
 
-# Ubuntu/Debian
-sudo apt update && sudo apt install ffmpeg
+1. **Configure AI API Key**
 
-# Windows: Download from https://ffmpeg.org/download.html
-```
-
-3. **Configure Environment Variables** (optional)
+Copy environment template:
 ```bash
 cp .env.example .env
-# Edit .env file and add your API key
 ```
 
-### Start the Service
-
-#### Streamlit Web Interface
+Edit `.env` file with your API keys:
 
 ```bash
-streamlit run streamlit_app.py
+# Zhipu AI (recommended, fast in China)
+OPENAI_API_KEY=your_zhipu_api_key_here
+OPENAI_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+DEFAULT_MODEL=glm-4.7-flash
+
+# Gemini AI (optional)
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+
+# Whisper model size
+WHISPER_MODEL_SIZE=base
 ```
 
-After the service starts, open your browser and visit `http://localhost:8501`
+2. **Configure Cookies (optional, for Douyin/Bilibili)**
 
-#### Command Line Tool
+Some platforms (Douyin, Bilibili) require login to download videos. Follow these steps:
+
+#### 🍪 Cookie Configuration Guide
+
+**Supported browsers**: Chrome, Edge, Firefox
+
+##### Douyin Cookie Configuration
+
+1. Visit https://www.douyin.com and log in
+2. Press `F12` to open Developer Tools
+3. Click `Application` or `Storage` tab
+4. Expand `Cookies` → `https://www.douyin.com`
+5. Find key cookies like `sessionid`, `passport_csrf_token`
+6. Click each cookie and copy its value
+7. Create file `cookies/douyin.txt` with this format:
+
+```
+# Netscape HTTP Cookie File
+.douyin.com	TRUE	/	FALSE	0	sessionid	your_sessionid_value
+.douyin.com	TRUE	/	FALSE	0	passport_csrf_token	your_csrf_token_value
+```
+
+**Easy method**: Use browser extension like "Get cookies.txt LOCALLY" to export cookies directly.
+
+##### Bilibili Cookie Configuration
+
+1. Visit https://www.bilibili.com and log in
+2. Export cookies using the same method
+3. Save as `cookies/bilibili.txt`
+
+##### YouTube Cookie Configuration
+
+1. Visit https://www.youtube.com
+2. Most videos work without cookies
+3. For premium content, configure cookies the same way
+
+### Usage
+
+#### Basic Usage
 
 ```bash
-# Simple mode: process a single file
-python transcribe.py video.mp4
-
-# Full mode: specify output and model
-python transcribe.py --video video.mp4 --output ./output --model zhipu
-
-# URL mode: extract URL from text automatically
+# Transcribe YouTube video (auto-extract URL from text)
 python transcribe.py "Check this out: https://www.youtube.com/watch?v=xxxxx"
-```
 
-## 📖 Usage Guide
-
-### Web Interface
-
-1. **Enter Video URL**: Paste a video link from YouTube, Bilibili, or other supported platforms
-2. **Select Summary Language**: Choose the output language from the dropdown
-3. **(Optional) Configure AI Model**: Click **AI Settings** to expand the panel
-   - Enter your **API Base URL** and **API Key**
-   - Click **Fetch** to auto-load available models
-   - Select the model you want to use
-4. **Start Processing**: Click the **Transcribe** button. The progress bar shows which mode is active:
-   - **⚡ Subtitle** (green) — native subtitles found, transcript extracted in seconds
-   - **🎙 Whisper** (amber) — no subtitles available, downloading audio for transcription
-5. **View Results**: Review the optimized transcript and AI summary
-
-### Command Line Tool
-
-```bash
-# Process local video file
+# Transcribe local video file
 python transcribe.py video.mp4
 
 # Specify output directory
 python transcribe.py --video video.mp4 --output ./my_output
 
-# Choose AI model (zhipu or gemini)
+# Choose AI model
 python transcribe.py --video video.mp4 --model gemini
+```
 
-# Process URL (automatically extract link from text)
-python transcribe.py "https://www.bilibili.com/video/BV1xx411c7mD"
+#### Supported Input Methods
+
+```bash
+# Method 1: Direct URL
+python transcribe.py "https://www.youtube.com/watch?v=xxxxx"
+
+# Method 2: Text containing URL (auto-extract)
+python transcribe.py "Recommended tutorial: https://www.bilibili.com/video/BV1xx411c7mD"
+
+# Method 3: Local file path
+python transcribe.py "/path/to/video.mp4"
 ```
 
 ## 🛠️ Technical Architecture
 
 ### Tech Stack
-- **Streamlit**: Web interface framework
-- **Faster-Whisper**: Efficient speech transcription
 - **yt-dlp**: Video downloading and processing
-- **OpenAI API**: Intelligent text summarization (compatible with Zhipu AI, Gemini, etc.)
+- **Faster-Whisper**: Efficient speech transcription
+- **OpenAI API**: Intelligent text summarization (compatible with Zhipu AI, Gemini)
+- **OpenCC**: Traditional to Simplified Chinese conversion
 
 ### Project Structure
 ```
 ai-transcriber/
-├── streamlit_app.py        # Streamlit Web Interface
-├── transcribe.py           # Command Line Tool
-├── Dockerfile              # Docker image configuration
-├── docker-compose.yml      # Docker Compose configuration
-├── .dockerignore           # Docker ignore rules
-├── .env.example            # Environment variables template
-├── requirements.txt        # Python dependencies
-├── install.sh              # Auto-install script
-├── README.md               # Project documentation
-└── README_ZH.md            # Chinese documentation
+├── transcribe.py       # Main program (CLI tool)
+├── requirements.txt    # Python dependencies
+├── .env.example        # Environment variables template
+├── cookies/            # Cookie files directory (optional)
+│   ├── douyin.txt      # Douyin cookies
+│   ├── bilibili.txt    # Bilibili cookies
+│   └── youtube.txt     # YouTube cookies
+├── temp/               # Temporary files (downloaded audio)
+└── output/             # Output files (transcription results)
 ```
 
 ## ⚙️ Configuration Options
@@ -156,10 +160,12 @@ ai-transcriber/
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `OPENAI_API_KEY` | API key | - | Yes |
+| `OPENAI_API_KEY` | Zhipu AI API key | - | Yes* |
 | `OPENAI_BASE_URL` | API endpoint | `https://open.bigmodel.cn/api/paas/v4/` | No |
 | `GEMINI_API_KEY` | Gemini API key | - | No |
 | `WHISPER_MODEL_SIZE` | Whisper model size | `base` | No |
+
+*At least one AI service must be configured
 
 ### Whisper Model Size Options
 
@@ -173,33 +179,22 @@ ai-transcriber/
 
 ## 🔧 FAQ
 
+### Q: Why are cookies needed?
+A: Platforms like Douyin and Bilibili require login to download videos. Cookies are your login credentials that allow the tool to download videos as you.
+
+### Q: Are cookies secure?
+A: Cookies only contain your login information, not passwords. Don't share cookie files with others or upload them to public repositories.
+
 ### Q: Why is transcription slow?
-A: Transcription speed depends on video length, Whisper model size, and hardware performance. Try using smaller models (like tiny or base).
+A: Depends on video length and Whisper model size. Try using `base` or `small` models.
 
-### Q: Which video platforms are supported?
-A: All platforms supported by yt-dlp, including: YouTube, TikTok, Facebook, Instagram, Twitter, Bilibili, Youku, iQiyi, Tencent Video, etc.
+### Q: Which platforms are supported?
+A: All platforms supported by yt-dlp, including YouTube, TikTok, Facebook, Instagram, Bilibili, Youku, iQiyi, Tencent Video, etc.
 
-### Q: How to use Docker?
+### Q: How to get API keys?
 A:
-```bash
-docker-compose up -d
-# Visit http://localhost:8501
-```
-
-### Q: What are the memory requirements?
-A: Recommended: 4GB+ RAM. Whisper model usage: base ~250MB, small ~750MB, medium ~1.5GB.
-
-### Q: Network connection errors?
-A: Try switching VPN/proxy, check network stability, or change AI provider endpoint.
-
-## 🎯 Supported Languages
-
-### Transcription
-- Supports 100+ languages through Whisper
-- Automatic language detection
-
-### Summary Generation
-- English, Chinese, Japanese, Korean, Spanish, French, German, Portuguese, Russian, Arabic, and more
+- **Zhipu AI**: Visit https://open.bigmodel.cn/ to register
+- **Gemini**: Visit https://aistudio.google.com/
 
 ## 📈 Performance Tips
 

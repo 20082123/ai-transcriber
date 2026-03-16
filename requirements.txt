@@ -1,8 +1,10 @@
-fastapi>=0.110.0
-uvicorn[standard]>=0.27.0
-python-multipart>=0.0.9
+# Core dependencies
+streamlit>=1.28.0
 yt-dlp>=2024.12.13
 faster-whisper>=1.1.0
 openai>=1.51.0
-pydantic>=2.7.0
-aiofiles>=24.1.0
+moviepy>=1.0.3
+python-dotenv>=1.0.0
+
+# Optional: for Traditional to Simplified Chinese conversion
+opencc-python-reimplemented>=0.1.7

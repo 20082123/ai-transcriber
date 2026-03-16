@@ -119,6 +119,27 @@ python transcribe.py --video video.mp4 --output ./my_output
 python transcribe.py --video video.mp4 --model gemini
 ```
 
+## ⚠️ Platform Limitations
+
+### URL Download Support
+
+| Platform | Cookie Required | Stability | Notes |
+|----------|----------------|-----------|-------|
+| **YouTube** | ❌ Not needed | ✅ Stable | Recommended |
+| **Bilibili** | ⚠️ Recommended | ✅ Stable | Long cookie validity |
+| **Douyin** | ⚠️ Required, complex | ❌ Unstable | Short cookie validity (3-7 days), strict anti-scraping |
+
+### Recommendation for Douyin Users
+
+Due to Douyin's strict anti-scraping measures, URL download often fails even with valid cookies. **Local file mode is recommended**:
+
+```bash
+# 1. Download Douyin video on mobile
+# 2. Transfer to computer
+# 3. Use local file mode
+python transcribe.py video.mp4
+```
+
 #### Supported Input Methods
 
 ```bash

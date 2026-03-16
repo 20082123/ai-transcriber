@@ -119,6 +119,27 @@ python transcribe.py --video video.mp4 --output ./my_output
 python transcribe.py --video video.mp4 --model gemini
 ```
 
+## ⚠️ 平台限制说明
+
+### URL 下载支持情况
+
+| 平台 | Cookie 要求 | 稳定性 | 备注 |
+|------|------------|--------|------|
+| **YouTube** | ❌ 不需要 | ✅ 稳定 | 推荐使用 |
+| **B站** | ⚠️ 建议配置 | ✅ 较稳定 | Cookie 有效期长 |
+| **抖音** | ⚠️ 必须，配置复杂 | ❌ 不稳定 | Cookie 有效期短（3-7天），反爬严格 |
+
+### 抖音用户建议
+
+由于抖音的反爬虫机制非常严格，即使配置 Cookie 也可能无法下载。**推荐使用本地文件模式**：
+
+```bash
+# 1. 手机下载抖音视频
+# 2. 传到电脑
+# 3. 使用本地文件模式
+python transcribe.py video.mp4
+```
+
 #### 支持的输入方式
 
 ```bash

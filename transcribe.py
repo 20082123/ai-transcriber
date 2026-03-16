@@ -263,8 +263,9 @@ def main():
             if cookies_file.exists():
                 cookies_path = cookies_file
 
-        # 下载音频
-        audio_path = temp_dir / "downloaded_audio.m4a"
+        # 下载音频（使用视频 ID 作为文件名）
+        video_id = url.split('/')[-1].split('?')[0][:20]  # 从 URL 提取简短 ID
+        audio_path = temp_dir / f"audio_{video_id}.m4a"
         print("\n[1/3] 下载音频...")
         if not download_audio(url, audio_path, cookies_path):
             sys.exit(1)
